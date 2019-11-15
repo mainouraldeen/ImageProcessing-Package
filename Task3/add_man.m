@@ -1,18 +1,12 @@
-function img_plus_man = add_man (Ibg, Iman)
+function img_plus_man = add_man (background_img, man_img)
 
-% Read background and man image
+#resize image
+[rows,cols,c]=size(background_img);
+man_img=imresize(man_img,[rows,cols]);
 
-% Adjust man's image size to the background image
-sz = size(Ibg);
-Iman = imresize(Iman,sz(1:2));
-% Create mask
-BWmask = Iman(:,:,1) > 12;
-BWmask = cat(3,BWmask,BWmask,BWmask);
-% Add masked man to the background
-Ibg(BWmask) = Iman(BWmask);
-% Show the result
-figure
-imshow(Ibg)
+man_mask=man_img(:,:,:)>0;#kda bgeb amakn el pixels el colored
+background_img(man_mask)=man_img(man_mask);#overwrite el values fl background
 
+img_plus_man=background_img;
 
 endfunction
