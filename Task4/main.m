@@ -1,6 +1,8 @@
-img=imread('morph.png');
+img=imread('test.png');
 cRes=c(img);
 figure, imshow(cRes),title("how many holes?");
 
 dRes=d(img);
-figure, imshow(dRes),title("how many objs have one-more holes?");
+
+gRes=g(img);
+figure, imshow(gRes),title("circular objects that have no holes");
