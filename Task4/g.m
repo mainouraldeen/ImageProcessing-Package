@@ -1,15 +1,14 @@
 function res = g(img)
 [l,w,c]=size(img);
-square_Img=zeros(w,l);
-circle_Img=zeros(w,l);
 binaryImg=im2bw(img);
 [l_img, objs]=bwlabel(binaryImg);
 
+square_Img=zeros(w,l);
+circle_Img=zeros(w,l);
 stats = regionprops(l_img,'BoundingBox');
 
-siz=size([stats.BoundingBox])(2)
-counter=0;
-[stats.BoundingBox]
+count_Of_Squares=0;
+
 for i =1 : objs
   x=stats(i).BoundingBox(1);
   y=stats(i).BoundingBox(2);
@@ -20,31 +19,29 @@ for i =1 : objs
   y=uint64(y);
 
   if binaryImg(y, x)==1 
-    counter=counter+1;
-#    square_Img(x:x+l, y:y+w)= binaryImg(x:x+l, y:y+w);
+    count_Of_Squares=count_Of_Squares+1;
     square_Img(y:y+l, x:x+w)= binaryImg(y:y+l, x:x+w);
   else 
-#    circle_Img(x:x+l, y:y+w)= binaryImg(x:x+l, y:y+w);
     circle_Img(y:y+l, x:x+w)= binaryImg(y:y+l, x:x+w);
   end
 end
+count_Of_Squares
+#f
+[squares,num]=bwlabel(square_Img);
 
+square_holes_indicies = d(square_Img,-1);
 
- res = img;
- figure, imshow(square_Img), title("Squares");
- figure, imshow(circle_Img), title("Circles");
+Count_of_Square_Objects_with_holes=length(square_holes_indicies)
 
-square_holes_indicies = d(square_Img)
-circle_holes_indicies = d(circle_Img)
+figure, imshow(ismember(squares, square_holes_indicies),[]),title("Square objects that have holes");
+#g
+[circles,num]=bwlabel(circle_Img);
 
-lenOfSqsWithHoles=length(square_holes_indicies)
-lenOfCrclWithHoles=length(circle_holes_indicies)
-#holes=find([stats.EulerNumber]<1); 
-#num_Of_objs_with_holes=length(holes)
-#for i = 1 : lenOfSqs
-#[i,m]=bwlabel(square_Img);
-figure, imshow(l_img(square_holes_indicies))
-#figure, imshow(l_img)
-#endfor
+circle_holes_indicies = d(circle_Img,1);
 
+Count_of_circles_Objects_with_holes=length(circle_holes_indicies)
+
+figure, imshow(ismember(circles, circle_holes_indicies),[]),title("circles objects that have no holes");
+
+res = square_Img;
 endfunction

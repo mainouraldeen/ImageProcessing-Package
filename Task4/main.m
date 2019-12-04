@@ -1,8 +1,9 @@
 img=imread('test.png');
-cRes=c(img);
-#figure, imshow(cRes),title("how many holes?");
+white_pixel_draction=a(img)
 
-#dRes=length(d(img));
+cRes=c(img);
+figure, imshow(cRes),title("how many holes?");
+
+dRes=length(d(img,-1));
 
 gRes=g(img);
-figure, imshow(gRes),title("circular objects that have no holes");
