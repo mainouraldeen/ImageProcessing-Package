@@ -1,4 +1,4 @@
-﻿#disp("Hello World");
+#disp("Hello World");
 
 img = imread('BS2.png');
 per = 0.1;

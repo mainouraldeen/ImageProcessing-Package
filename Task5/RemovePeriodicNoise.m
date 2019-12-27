@@ -1,40 +1,55 @@
 function RestoredImage = RemovePeriodicNoise(img)
+
 originalImg=img;
-[rows,cols,c]=size(img);
-RestoredImage=zeros(rows,cols);
-##Red
-img=originalImg(:,:,1);
-img = double(img);
-ffImg = fftshift(fft2(img));
+originalImg=double(originalImg);
+[rows,cols,c]=size(originalImg);
+RestoredImage=zeros(rows,cols,c);
 
-fLog = log(1 + abs(ffImg));
-filter = (fLog > .7*max(fLog(:)) ) | (fLog < .25*max(fLog(:)) );
-figure,imshow(filter);
+for channel = 1 : c
+    img=originalImg(:,:,channel);
+    ffImg = fftshift(fft2(img));
+##    mat=power(abs(ffImg),2);
+##    fLog = mat2gray(log(mat)+1);
 
-R = abs(ifft2(ffImg.*filter));
+    realPart = real(ffImg);
+    imagPart = imag(ffImg);
 
-##Green
-img=originalImg(:,:,2);
-img = double(img);
-ffImg = fftshift(fft2(img));
+    realPart = power(realPart, 2);
+    imagPart = power(imagPart, 2);
 
-fLog = log(1 + abs(ffImg));
-filter = (fLog > .7*max(fLog(:)) ) | (fLog < .25*max(fLog(:)) );#bygeeb amakn el no2at ele akbar mn ele 7awleha ?
-figure,imshow(filter);
-G = abs(ifft2(ffImg.*filter));
+    mag = power(realPart + imagPart, 0.5);
+    fLog = log(mag);
 
-##Blue
-img=originalImg(:,:,3);
-img = double(img);
-ffImg = fftshift(fft2(img));
 
-fLog = log(1 + abs(ffImg));
-filter = (fLog > .7*max(fLog(:)) ) | (fLog < .25*max(fLog(:)) );
-figure,imshow(filter);
+figure, imshow(fLog,[]);
 
-B = abs(ifft2(ffImg.*filter));
-##
+
+ for i = 2 : rows-1
+
+     for j = 2 : cols-1
+ 
+       if fLog(i,j)>fLog(i+1,j) && fLog(i,j)>fLog(i-1,j)&&fLog(i,j)>fLog(i+1,j) &&fLog(i,j)>fLog(i,j-1)&&fLog(i,j)>fLog(i,j+1)&&fLog(i,j)>fLog(i-1,j-1) &&fLog(i,j)>fLog(i-1,j+1) &&fLog(i,j)>fLog(i+1,j-1) &&fLog(i,j)>fLog(i+1,j+1)
+        fLog(i,j) = 0;
+          ffImg(i,j)=0;
+        
+        end
+    end
+    
+end
+    
+figure, imshow(fLog,[]);
+    
+    if channel==1
+      R = ifft2(ifftshift(ffImg));
+    elseif channel==2
+      G = ifft2(ifftshift(ffImg));
+    else
+      B = ifft2(ifftshift(ffImg));
+    end 
+end
+
 RestoredImage(:,:,1) = R;
 RestoredImage(:,:,2) = G;
 RestoredImage(:,:,3) = B;
+
 endfunction
